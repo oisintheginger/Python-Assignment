@@ -29,6 +29,9 @@ import random
 import string
 import os.path
 
+membersdirectory = 'members.json'
+loansdirectory = 'loans.json'
+
 class Address:
     def __init__(self, AddressLine1, AddressLine2, Town, County, Province, Country, Postcode):
         self.AddressLine1 = AddressLine1
@@ -51,10 +54,39 @@ class Member():
         loanslist = list()
 
 
+class Item():
+    def __init__(self, description: str):
+        self.ItemNum = ''.join(random.choices(string.ascii_letters, k=3)) +'-'+''.join(random.choices(string.digits, k=3)) +'-'+ type(self).__name__
+        self.description = description
+
+
+class Book(Item):
+    def __init__(self,title, ISBN: str, publisher: str, listofauthors: list, *args, **kwargs):
+        super(Book, self).__init__(*args, **kwargs)
+        self.title = title
+        self.ISBN = ISBN
+        self.publisher = publisher
+
+
+class Journal(Book):
+    def __init__(self, volume: str, articlelist: list, *args, **kwargs):
+        super(Book, self).__init__(*args, **kwargs)
+        self.volume = volume
+        self.articlelist = articlelist
+
+
+class Article(Item):
+    def __init__(self,title, journal: Journal, volume: str, listofauthors: list, *args, **kwargs):
+        super(Article, self).__init__(*args, **kwargs)
+        self.title = title
+        self.JournalISBN = journal.ISBN
+        self.authors = listofauthors
+        self.volume = volume
 
 
 datastream = {
 }
+
 
 def memberformatter(member: Member):
     memberdetails = {}
@@ -63,19 +95,82 @@ def memberformatter(member: Member):
     memberdetails['dob'] = str(member.DOB)
     return memberdetails
 
+
+def jsontomember(jsondictionary: dict, memberID: str):
+    print(jsondictionary)
+
+
+
+class Library():
+    def __init__(self, name: str):
+        self.Name = name
+        self.Members = dict
+        if os.path.exists(membersdirectory):
+            with open(membersdirectory, 'r') as json_file:
+                try:
+                    self.Members = json.loads(json_file.read())
+                except ValueError:
+                    self.Members = {}
+        print(self.Members)
+        self.Loans = dict
+        if os.path.exists(loansdirectory):
+            with open(loansdirectory, 'r') as json_file:
+                try:
+                    self.Members = json.loads(json_file.read())
+                except ValueError:
+                    self.Members = {}
+
+
+def setup():
+    if os.path.exists(membersdirectory):
+        os.remove(membersdirectory)
+    if os.path.exists(loansdirectory):
+        os.remove(loansdirectory)
+
+
+    PhilipAdd = Address('8024', 'Doyle Avenue', 'Roscommon Town', 'Roscommon', 'Munster', 'Ireland', 'A73MX91')
+    Philip = Member('Philip', PhilipAdd, date.datetime.now())
+
+    MaryAdd = Address('79', 'Cliff Road', 'Galway City', 'Galway', 'Connaught', 'Ireland', 'E94XM23')
+    Mary = Member('Mary', MaryAdd, date.datetime.now())
+
+    JimAdd = Address('100', 'Skid Row', 'Chicago', 'Chicago', 'Illinois', 'United States of America', 'M90TU32')
+    Jim = Member('Jim', JimAdd, date.datetime.now())
+
+    ChloeAdd = Address('27', 'Mill Lane', 'Trim', 'Meath', 'Leinster', 'Ireland', 'P92VI65')
+    Chloe = Member('Mary', ChloeAdd, date.datetime.now())
+
+    datastream = dict()
+    datastream[Philip.MemberID] = memberformatter(Philip)
+    datastream[Mary.MemberID] = memberformatter(Mary)
+    datastream[Jim.MemberID] = memberformatter(Jim)
+    datastream[Chloe.MemberID] = memberformatter(Chloe)
+
+    print(datastream)
+    with open(membersdirectory, 'w') as outfile:
+        json.dump(datastream, outfile, indent = 4)
+
+
 def main():
     while True:
         inp = input('q to quit')
         if inp == 'q':
             break
 
+
 if __name__ == '__main__':
+    setup()
+    it = Item('This is a description')
+    lib = Library('New Library Bro')
+
+
+    '''
+
     if os.path.exists('members.json'):
         with open('members.json') as json_file:
             datastream = json.load(json_file)
             #stringggg = json.dumps(datastream)
             print(datastream)
-
     add = Address('no','no','yare yare','no','no','no','no')
     mem = Member('Philip', add, date.datetime.now())
     datastream[mem.MemberID] = memberformatter(mem)
@@ -83,3 +178,4 @@ if __name__ == '__main__':
     with open('members.json', 'w') as outfile:
         json.dump(datastream, outfile)
     #file1 = open("MembersFile.json", "a+")
+    '''

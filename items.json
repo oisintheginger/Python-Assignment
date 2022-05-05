@@ -1,0 +1,12 @@
+{
+    "pxr-971-Book": {
+        "itemnumber": "pxr-971-Book",
+        "description": "An old story that I do not know the plot of.",
+        "title": "The Wind and the Willows",
+        "isbn": "X49932-18839",
+        "publisher": "Penguin",
+        "authors": [
+            "Author of the Book"
+        ]
+    }
+}

@@ -32,8 +32,8 @@ import os.path
 membersdirectory = 'members.json'
 loansdirectory = 'loans.json'
 
-class Address:
-    def __init__(self, AddressLine1, AddressLine2, Town, County, Province, Country, Postcode):
+class Address():
+    def __init__(self, AddressLine1:str, AddressLine2:str, Town:str, County:str, Province:str, Country:str, Postcode:str):
         self.AddressLine1 = AddressLine1
         self.AddressLine2 = AddressLine2
         self.Town = Town
@@ -42,26 +42,37 @@ class Address:
         self.Country = Country
         self.Postcode = Postcode
 
+    def __str__(self):
+        return '\n{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n'.format(self.AddressLine1, self.AddressLine2, self.Town, self.County, self.Province, self.Country, self.Postcode)
+
 
 
 class Member():
-    def __init__(self, Name: str, address: Address, DOB: date.datetime):
+    def __init__(self, Name: str, address: Address, DOB: date.datetime, ID =''):
         self.Name = Name
-        self.Address = address
+        self.MemberAddress = address
         self.DOB = DOB
-        self.MemberID = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+        if ID == '':
+            self.MemberID = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+        else:
+            self.MemberID = ID
         bookingsList = list()
         loanslist = list()
+
+    def __str__(self):
+        return '{0} lives in {1}, and were born on {2}. Their user ID is {3}'.format(self.Name, self.MemberAddress.Town, self.DOB, self.MemberID)
 
 
 class Item():
     def __init__(self, description: str):
+        '''description: str'''
         self.ItemNum = ''.join(random.choices(string.ascii_letters, k=3)) +'-'+''.join(random.choices(string.digits, k=3)) +'-'+ type(self).__name__
         self.description = description
 
 
 class Book(Item):
     def __init__(self,title, ISBN: str, publisher: str, listofauthors: list, *args, **kwargs):
+        '''title: str, isbn:str , publisher:str , list of authors: list, description: str'''
         super(Book, self).__init__(*args, **kwargs)
         self.title = title
         self.ISBN = ISBN
@@ -84,22 +95,6 @@ class Article(Item):
         self.volume = volume
 
 
-datastream = {
-}
-
-
-def memberformatter(member: Member):
-    memberdetails = {}
-    memberdetails['name'] = member.Name
-    memberdetails['address'] = [member.Address.AddressLine1, member.Address.AddressLine2, member.Address.Town, member.Address.County, member.Address.Province, member.Address.Country, member.Address.Postcode]
-    memberdetails['dob'] = str(member.DOB)
-    return memberdetails
-
-
-def jsontomember(jsondictionary: dict, memberID: str):
-    print(jsondictionary)
-
-
 
 class Library():
     def __init__(self, name: str):
@@ -111,14 +106,41 @@ class Library():
                     self.Members = json.loads(json_file.read())
                 except ValueError:
                     self.Members = {}
-        print(self.Members)
         self.Loans = dict
         if os.path.exists(loansdirectory):
             with open(loansdirectory, 'r') as json_file:
                 try:
-                    self.Members = json.loads(json_file.read())
+                    self.Loans = json.loads(json_file.read())
                 except ValueError:
                     self.Members = {}
+
+datastream = {}
+
+
+def memberformatter(member: Member):
+    memberdetails = {}
+    memberdetails['name'] = member.Name
+    memberdetails['address'] = [member.MemberAddress.AddressLine1, member.MemberAddress.AddressLine2, member.MemberAddress.Town, member.MemberAddress.County, member.MemberAddress.Province, member.MemberAddress.Country, member.MemberAddress.Postcode]
+    memberdetails['dob'] = str(member.DOB)
+    return memberdetails
+
+
+def jsontomember(jsondictionary: dict, memberID: str):
+    memberdatadict = jsondictionary[memberID]
+    dataname = memberdatadict['name']
+    dataaddress = Address(memberdatadict['address'][0], memberdatadict['address'][1], memberdatadict['address'][2], memberdatadict['address'][3], memberdatadict['address'][4],memberdatadict['address'][5],memberdatadict['address'][6])
+    dataDOB = memberdatadict['dob']
+    returnable = Member(dataname,dataaddress,dataDOB, memberID)
+    return returnable
+
+def itemformatter(item: Item):
+    itemdetails ={}
+    itemdetails['itemnumber'] = item.ItemNum
+    itemdetails['description'] = item.description
+    if type(item).__name__ == 'Book':
+        itemdetails['isbn'] = item.ISBN
+        print('issa book!')
+
 
 
 def setup():
@@ -126,7 +148,6 @@ def setup():
         os.remove(membersdirectory)
     if os.path.exists(loansdirectory):
         os.remove(loansdirectory)
-
 
     PhilipAdd = Address('8024', 'Doyle Avenue', 'Roscommon Town', 'Roscommon', 'Munster', 'Ireland', 'A73MX91')
     Philip = Member('Philip', PhilipAdd, date.datetime.now())
@@ -146,23 +167,38 @@ def setup():
     datastream[Jim.MemberID] = memberformatter(Jim)
     datastream[Chloe.MemberID] = memberformatter(Chloe)
 
+    newItem = Book('The Wind and the Willows', 'X49932-18839','Penguin', ['Author of the Book'], 'An old story that I do not know the plot of.')
+    itemformatter(newItem)
+
+    datastream = dict()
+
     print(datastream)
     with open(membersdirectory, 'w') as outfile:
         json.dump(datastream, outfile, indent = 4)
 
 
+
+
+
+
 def main():
+    setup()
+    it = Item('This is a description')
+    lib = Library('New Library Bro')
+    #LoggedIn = jsontomember(lib.Members, 'ww7vA3i2J99RMfIc')
+   # print(LoggedIn)
     while True:
         inp = input('q to quit')
         if inp == 'q':
             break
 
 
-if __name__ == '__main__':
-    setup()
-    it = Item('This is a description')
-    lib = Library('New Library Bro')
 
+
+
+
+if __name__ == '__main__':
+    main()
 
     '''
 

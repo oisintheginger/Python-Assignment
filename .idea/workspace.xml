@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="056caa0d-9572-4253-ab3e-0ccad3b815be" name="Changes" comment="">
+    <list default="true" id="056caa0d-9572-4253-ab3e-0ccad3b815be" name="Changes" comment="Just Working On the Lab">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/members.json" beforeDir="false" afterPath="$PROJECT_DIR$/members.json" afterDir="false" />
@@ -47,9 +47,9 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="" />
+      <option name="SDK_HOME" value="C:\Users\oisin\anaconda3\envs\LabWork Project\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="false" />
       <option name="ADD_SOURCE_ROOTS" value="false" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
@@ -71,6 +71,14 @@
       <option name="presentableId" value="Default" />
       <updated>1651663930211</updated>
     </task>
+    <task id="LOCAL-00001" summary="Just Working On the Lab">
+      <created>1651674833136</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1651674833136</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -86,5 +94,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Just Working On the Lab" />
+    <option name="LAST_COMMIT_MESSAGE" value="Just Working On the Lab" />
   </component>
 </project>

@@ -64,12 +64,11 @@ def setup():
     datastream = dict()
     newItem = Book( 'X49932-18839', 'Penguin', ['Author of the Book'], 'The Wind and the Willows','An old story that I do not know the plot of.')
     datastream[newItem.ItemNum] = itemformatter(newItem)
-
+    print
     with open(itemdirectory, 'w') as outfile:
         json.dump(datastream, outfile, indent = 4)
 
-
-    print(datastream)
+    print()
 
 
 
@@ -78,13 +77,19 @@ def setup():
 
 
 def main():
-    setup()
-    it = Item('This is a title', 'This is a description')
-    lib = Library('New Library Bro')
+    #setup()
+    #it = Item('This is a title', 'This is a description')
+    #lib = Library('New Library Bro')
+
+    app = Application()
+    app.lib.searchlibraryitems()
+    #app.lib.new_member()
     #LoggedIn = jsontomember(lib.Members, 'ww7vA3i2J99RMfIc')
+    #print(lib.Items)
    # print(LoggedIn)
     while True:
-        inp = input('q to quit')
+        print('Options \n 1. Search Library \2')
+        inp = input()
         if inp == 'q':
             break
 

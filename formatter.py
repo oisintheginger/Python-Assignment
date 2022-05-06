@@ -20,8 +20,9 @@ def jsontomember(jsondictionary: dict, memberID: str):
 def itemformatter(item: Item):
     itemdetails ={}
     itemdetails['itemnumber'] = item.ItemNum
-    itemdetails['description'] = item.description
     itemdetails['title'] = item.title
+    itemdetails['description'] = item.description
+    itemdetails['type'] = type(item).__name__
     if type(item).__name__ == 'Book':
         itemdetails['isbn'] = item.ISBN
         itemdetails['publisher'] = item.publisher
@@ -33,3 +34,14 @@ def itemformatter(item: Item):
     return itemdetails
 
 
+def jsontoitem(jsondict: dict):
+    for i in jsondict:
+        datadict = jsondict[i]
+        print(datadict)
+
+
+def loanformatter(loan: Loan):
+    loandetails = {}
+    loandetails['LoanRef'] = loan.LoanRef
+    loandetails['MemberID'] = loan.MemberID
+    loandetails['ItemNum'] = loan.ItemNumber

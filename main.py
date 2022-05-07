@@ -29,7 +29,6 @@ import random
 import string
 import os.path
 from projectclasses import *
-from formatter import *
 
 
 
@@ -62,9 +61,15 @@ def setup():
         json.dump(datastream, outfile, indent = 4)
 
     datastream = dict()
-    newItem = Book( 'X49932-18839', 'Penguin', ['Author of the Book'], 'The Wind and the Willows','An old story that I do not know the plot of.')
+    newItem = Book('X49932-18839', 'Penguin', ['Author of the Book'], 'The Wind and the Willows','An old story that I do not know the plot of.')
+
+    newjournal = Journal('volume1', ['article1'],'XHSHBF-BGHBG', 'Elsevier', ['Compiled By'], 'New England Journal of Medicine', 'A journal that is about medicine')
+
+    newarticle = Article('XHSHBF-BGHBG',['Article Author 1', 'Article Author 2', 'Article Author 3'], 'Funny Article Title','Describing the funny article')
+
     datastream[newItem.ItemNum] = itemformatter(newItem)
-    print
+    datastream[newjournal.ItemNum] = itemformatter(newjournal)
+    datastream[newarticle.ItemNum] = itemformatter(newarticle)
     with open(itemdirectory, 'w') as outfile:
         json.dump(datastream, outfile, indent = 4)
 
@@ -82,15 +87,21 @@ def main():
     #lib = Library('New Library Bro')
 
     app = Application()
-    app.lib.searchlibraryitems()
+    #app.lib.searchlibraryitems()
     #app.lib.new_member()
     #LoggedIn = jsontomember(lib.Members, 'ww7vA3i2J99RMfIc')
     #print(lib.Items)
    # print(LoggedIn)
     while True:
-        print('Options \n 1. Search Library \2')
+        print('Options \n 1. Setup \n 2. Search Library\n 3. Add Item To Library')
         inp = input()
-        if inp == 'q':
+        if inp =='1':
+            setup()
+        elif inp =='2':
+           app.lib.searchlibraryitems()
+        elif inp =='3':
+           app.lib.add_item()
+        elif inp == 'q':
             break
 
 

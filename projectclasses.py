@@ -80,20 +80,19 @@ class Book(Item):
         self.authors = listofauthors
 
 
+
 class Journal(Book):
     def __init__(self, volume: str, articlelist: list, *args, **kwargs):
-        super(Book, self).__init__(*args, **kwargs)
+        super(Journal, self).__init__(*args, **kwargs)
         self.volume = volume
         self.articlelist = articlelist
 
 
 class Article(Item):
-    def __init__(self,articletitle, journal: Journal, volume: str, listofauthors: list, *args, **kwargs):
+    def __init__(self, journalisbn: Journal, listofauthors: list, *args, **kwargs):
         super(Article, self).__init__(*args, **kwargs)
-        self.articletitle = articletitle
-        self.JournalISBN = journal.ISBN
+        self.JournalISBN = journalisbn
         self.authors = listofauthors
-        self.volume = volume
 
 class Loan():
     def __init__(self, MemberID:str, ItemNum:str):
@@ -119,7 +118,7 @@ def jsontomember(jsondictionary: dict, memberID: str):
     return returnable
 
 def itemformatter(item: Item):
-    itemdetails ={}
+    itemdetails = {}
     itemdetails['itemnumber'] = item.ItemNum
     itemdetails['title'] = item.title
     itemdetails['description'] = item.description
@@ -128,10 +127,15 @@ def itemformatter(item: Item):
         itemdetails['isbn'] = item.ISBN
         itemdetails['publisher'] = item.publisher
         itemdetails['authors'] = item.authors
-        if type(item).__name__ == 'Journal':
-            itemdetails['volume'] = item.volume
-            itemdetails['articlelist'] = item.articlelist
-
+    if type(item).__name__ == 'Journal':
+        itemdetails['isbn'] = item.ISBN
+        itemdetails['publisher'] = item.publisher
+        itemdetails['authors'] = item.authors
+        itemdetails['volume'] = item.volume
+        itemdetails['articlelist'] = item.articlelist
+    if type(item).__name__ == 'Article':
+        itemdetails['journalisbn'] = item.JournalISBN
+        itemdetails['authors'] = item.authors
     return itemdetails
 
 
@@ -149,7 +153,14 @@ def loanformatter(loan: Loan):
 
 
 
-
+def list_of_strings(message: str):
+    newlist = list()
+    while True:
+        inp = input(message +' (q to quit)')
+        if inp == 'q':
+            break
+        newlist.append(inp)
+    return newlist
 
 class Library():
     def __init__(self, name: str):
@@ -212,13 +223,11 @@ class Library():
         search_results_string = list()
         search_term = input("Please enter keyword for search\n").lower()
         search_term = search_term.strip()
-
         inclusive = False
         match_all = input("Would you like an inclusive search or a contains-all search? ( i / c )")
         if match_all != 'c':
             print("defaulting to inclusive search")
             inclusive = True
-
         no_results_found = True  # assume that  there will be no search results
         while no_results_found == True:
             no_results_found = False
@@ -241,6 +250,29 @@ class Library():
                     else:
                         if keywords.issubset(titleset) and i not in search_results:
                             search_results.append(i)
+                    itemnumset = set(self.Items[i]['itemnumber'].lower().split(' '))
+                    if inclusive:  # If the search type is inclusive, results will contain all articles that contain each individual word
+                        if len(keywords.intersection(itemnumset)) > 0 and i not in search_results:
+                            search_results.append(i)
+                    else:
+                        if keywords.issubset(itemnumset) and i not in search_results:
+                            search_results.append(i)
+                    if self.Items[i]['type'] == 'Book' or self.Items[i]['type'] == 'Journal':
+                        isbnset = set(self.Items[i]['isbn'].lower().split(' '))
+                        if inclusive:  # If the search type is inclusive, results will contain all articles that contain each individual word
+                            if len(keywords.intersection(isbnset)) > 0 and i not in search_results:
+                                search_results.append(i)
+                        else:
+                            if keywords.issubset(isbnset) and i not in search_results:
+                                search_results.append(i)
+                    elif self.Items[i]['type'] == 'Article':
+                        isbnset = set(self.Items[i]['journalisbn'].lower().split(' '))
+                        if inclusive:  # If the search type is inclusive, results will contain all articles that contain each individual word
+                            if len(keywords.intersection(isbnset)) > 0 and i not in search_results:
+                                search_results.append(i)
+                        else:
+                            if keywords.issubset(isbnset) and i not in search_results:
+                                search_results.append(i)
 
             if len(search_results) < 1:
                 no_results_found = True
@@ -267,6 +299,37 @@ class Library():
         for s in search_results_string:  # Just printing out the rows of the string
             print(s + '\n')
         '''
+
+    def add_item(self):
+        while True:
+            print('Choose Item To Add \n 1. Book \n 2. Journal \n 3. Article \n q Quit')
+            inp = input()
+            if inp == '1':
+                self.create_book()
+            elif inp == '2':
+                print('lalalalala')
+            elif inp == 'q':
+                return
+            else:
+                print('Please enter a valid option')
+
+    def create_book(self):
+        title = input('Enter Name for Book')
+        description = input('Enter Description for Book')
+        authors = list_of_strings('Enter Author Name')
+        publisher = input('Enter Publisher for Book')
+        isbn = input('Enter ISBN for Book')
+
+        newbook = Book(isbn, publisher, authors, title, description)
+        self.Items[newbook.ItemNum] = itemformatter(newbook)
+        print(newbook)
+        print('------------------')
+        print(self.Items[newbook.ItemNum])
+        self.savedata()
+
+    #def create_journal(self):
+
+    #def create_article(self):
 
 
 

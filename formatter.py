@@ -27,10 +27,18 @@ def itemformatter(item: Item):
         itemdetails['isbn'] = item.ISBN
         itemdetails['publisher'] = item.publisher
         itemdetails['authors'] = item.authors
-        if type(item).__name__ == 'Journal':
-            itemdetails['volume'] = item.volume
-            itemdetails['articlelist'] = item.articlelist
-
+    if type(item).__name__ == 'Journal':
+        itemdetails['isbn'] = item.ISBN
+        itemdetails['publisher'] = item.publisher
+        itemdetails['authors'] = item.authors
+        itemdetails['volume'] = item.volume
+        itemdetails['articlelist'] = item.articlelist
+    if type(item).__name__ == 'Article':
+        itemdetails['isbn'] = item.ISBN
+        itemdetails['publisher'] = item.publisher
+        itemdetails['authors'] = item.authors
+        itemdetails['volume'] = item.volume
+        itemdetails['articlelist'] = item.articlelist
     return itemdetails
 
 

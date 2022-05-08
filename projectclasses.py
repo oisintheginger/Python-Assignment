@@ -307,7 +307,9 @@ class Library():
             if inp == '1':
                 self.create_book()
             elif inp == '2':
-                print('lalalalala')
+                self.create_journal()
+            elif inp == '3':
+                self.create_article()
             elif inp == 'q':
                 return
             else:
@@ -327,9 +329,47 @@ class Library():
         print(self.Items[newbook.ItemNum])
         self.savedata()
 
-    #def create_journal(self):
+    def create_journal(self):
+        title = input('Enter Name for Journal')
+        description = input('Enter Description for Journal')
+        authors = list_of_strings('Enter Author Name')
+        publisher = input('Enter Publisher for Journal')
+        isbn = input('Enter ISBN for Journal')
+        vol = str(request_num_input('Enter a Volume Number', True))
+        articlelist = list_of_strings('Enter Article Item Number')
+        newjournal = Journal(vol, articlelist,isbn, publisher, authors, title, description)
+        self.Items[newjournal.ItemNum] = itemformatter(newjournal)
+        print(newjournal)
+        print('------------------')
+        print(self.Items[newjournal.ItemNum])
+        self.savedata()
 
-    #def create_article(self):
+    def create_article(self):
+        title = input('Enter Name for Article')
+        description = input('Enter Description for Article')
+        authors = list_of_strings('Enter Author Name')
+        isbn = input('Enter ISBN for Journal of Article')
+        newarticle = Article(isbn, authors, title, description)
+
+    def display_items_of_type(self, itemtype: Item):
+        result_list = list()
+        for a in self.Items:
+            if self.key_val_match('type',itemtype.__name__,self.Items[a]) is True:
+                result_list.append((a, self.Items[a]['title']))
+        for r in result_list:
+            print(r)
+
+    def create_loan(self, member_id: str, item_id, return_date: date.datetime):
+
+        loan_dic = dict()
+        loan_dic['member'] = member_id
+        loan_dic['item'] = item_id
+        loan_dic['due'] = str(return_date)
+        loan_dic['reference'] = ''.join(random.choices(string.ascii_lowercase, k=4)) + '-' + ''.join(random.choices(string.digits, k=4))
+
+    def key_val_match(self, key: str, value: str, dic: dict()):
+        return dic[key] == value
+
 
 
 
@@ -354,19 +394,3 @@ class Application():
     def __init__(self):
         self.lib = Library('TUDublin Library')
 
-    def CreateLoan(self, member: Member, item: Item):
-            if item.ItemNum in self.Loans:
-                print("Item already out on loan")
-                return
-            else:
-                createdloan = Loan(member.MemberID, item.ItemNum)
-                datastream = {}
-                with open(loansdirectory, 'r') as json_file:
-                    try:
-                        datastream = json.loads(json_file.read())
-                    except ValueError:
-                        datastream = {}
-
-                datastream[createdloan.LoanRef] = loanformatter(createdloan)
-                with open(loansdirectory, 'w') as outfile:
-                    json.dump(datastream, outfile, indent=4)

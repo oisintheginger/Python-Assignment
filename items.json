@@ -1,6 +1,6 @@
 {
-    "wAM-890-Book": {
-        "itemnumber": "wAM-890-Book",
+    "uNY-637-Book": {
+        "itemnumber": "uNY-637-Book",
         "title": "The Wind and the Willows",
         "description": "An old story that I do not know the plot of.",
         "type": "Book",
@@ -10,8 +10,8 @@
             "Author of the Book"
         ]
     },
-    "vsY-201-Journal": {
-        "itemnumber": "vsY-201-Journal",
+    "zLt-627-Journal": {
+        "itemnumber": "zLt-627-Journal",
         "title": "New England Journal of Medicine",
         "description": "A journal that is about medicine",
         "type": "Journal",
@@ -20,13 +20,13 @@
         "authors": [
             "Compiled By"
         ],
-        "volume": "volume1",
+        "volume": 1,
         "articlelist": [
             "article1"
         ]
     },
-    "Cfl-376-Article": {
-        "itemnumber": "Cfl-376-Article",
+    "VsC-218-Article": {
+        "itemnumber": "VsC-218-Article",
         "title": "Funny Article Title",
         "description": "Describing the funny article",
         "type": "Article",
@@ -37,19 +37,18 @@
             "Article Author 3"
         ]
     },
-    "NrG-568-Book": {
-        "itemnumber": "NrG-568-Book",
-        "title": "my new book",
-        "description": "this is a book I am using for testing purposes",
-        "type": "Book",
-        "isbn": "hhhh-1111",
-        "publisher": "Elsevier",
+    "rXp-998-Journal": {
+        "itemnumber": "rXp-998-Journal",
+        "title": "fancy journal",
+        "description": "this is the description of the fancy journal",
+        "type": "Journal",
+        "isbn": "23334-23421",
+        "publisher": "elsevier",
         "authors": [
-            "sir radagast",
-            "sir gandalf",
-            "sir palando",
-            "sir caranthir",
-            "sir alatar"
-        ]
+            "john",
+            "mary"
+        ],
+        "volume": "1",
+        "articlelist": []
     }
 }

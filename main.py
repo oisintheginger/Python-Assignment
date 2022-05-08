@@ -63,7 +63,7 @@ def setup():
     datastream = dict()
     newItem = Book('X49932-18839', 'Penguin', ['Author of the Book'], 'The Wind and the Willows','An old story that I do not know the plot of.')
 
-    newjournal = Journal('volume1', ['article1'],'XHSHBF-BGHBG', 'Elsevier', ['Compiled By'], 'New England Journal of Medicine', 'A journal that is about medicine')
+    newjournal = Journal(1, ['article1'],'XHSHBF-BGHBG', 'Elsevier', ['Compiled By'], 'New England Journal of Medicine', 'A journal that is about medicine')
 
     newarticle = Article('XHSHBF-BGHBG',['Article Author 1', 'Article Author 2', 'Article Author 3'], 'Funny Article Title','Describing the funny article')
 
@@ -77,7 +77,20 @@ def setup():
 
 
 
-
+def search_by_item_category(app: Application):
+    while True:
+        print('Display By: \n 1. Book \n 2. Journal\n 3. Article \n 4. OtherMedia(not implemented yet) \n q. Return')
+        inp = input()
+        if inp =='1':
+            app.lib.display_items_of_type(Book)
+        elif inp =='2':
+            app.lib.display_items_of_type(Journal)
+        elif inp =='3':
+            app.lib.display_items_of_type(Article)
+        elif inp == '4':
+            app.lib.display_items_of_type(Item)
+        elif inp == 'q':
+            break
 
 
 
@@ -93,7 +106,7 @@ def main():
     #print(lib.Items)
    # print(LoggedIn)
     while True:
-        print('Options \n 1. Setup \n 2. Search Library\n 3. Add Item To Library')
+        print('Options \n 1. Setup \n 2. Search Library\n 3. Add Item To Library \n 4. Display Items\n q. Quit')
         inp = input()
         if inp =='1':
             setup()
@@ -101,6 +114,8 @@ def main():
            app.lib.searchlibraryitems()
         elif inp =='3':
            app.lib.add_item()
+        elif inp == '4':
+            search_by_item_category(app)
         elif inp == 'q':
             break
 

@@ -360,12 +360,15 @@ class Library():
             print(r)
 
     def create_loan(self, member_id: str, item_id, return_date: date.datetime):
-
         loan_dic = dict()
         loan_dic['member'] = member_id
         loan_dic['item'] = item_id
         loan_dic['due'] = str(return_date)
+        new_ref = ''.join(random.choices(string.ascii_lowercase, k=4)) + '-' + ''.join(random.choices(string.digits, k=4))
+
         loan_dic['reference'] = ''.join(random.choices(string.ascii_lowercase, k=4)) + '-' + ''.join(random.choices(string.digits, k=4))
+        self.Loans[new_ref] = loan_dic
+        self.savedata()
 
     def key_val_match(self, key: str, value: str, dic: dict()):
         return dic[key] == value

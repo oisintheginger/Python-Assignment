@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="056caa0d-9572-4253-ab3e-0ccad3b815be" name="Changes" comment="Formatting classes in json">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/items.json" beforeDir="false" afterPath="$PROJECT_DIR$/items.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/loans.json" beforeDir="false" afterPath="$PROJECT_DIR$/loans.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/members.json" beforeDir="false" afterPath="$PROJECT_DIR$/members.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/projectclasses.py" beforeDir="false" afterPath="$PROJECT_DIR$/projectclasses.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -57,12 +56,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="C:\Users\oisin\.conda\envs\pythonProject\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/OneDrive - Technological University Dublin/Pre Masters/OOP Python/LabWork Project" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../.. - Technological University Dublin/Pre Masters/OOP Python/LabWork Project" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="" />
-      <option name="SCRIPT_NAME" value="$USER_HOME$/OneDrive - Technological University Dublin/Pre Masters/OOP Python/LabWork Project/Week8Assignment.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../.. - Technological University Dublin/Pre Masters/OOP Python/LabWork Project/Week8Assignment.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -78,12 +77,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="C:\Users\oisin\.conda\envs\pythonProject\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/OneDrive - Technological University Dublin/Pre Masters/OOP Python/LabWork Project" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../../.. - Technological University Dublin/Pre Masters/OOP Python/LabWork Project" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="" />
-      <option name="SCRIPT_NAME" value="$USER_HOME$/OneDrive - Technological University Dublin/Pre Masters/OOP Python/LabWork Project/Week9.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../../../.. - Technological University Dublin/Pre Masters/OOP Python/LabWork Project/Week9.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -98,7 +97,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\oisin\.conda\envs\pythonProject\python.exe" />
+      <option name="SDK_HOME" value="C:\Users\oisin\anaconda3\envs\LabWork Project\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -134,6 +133,12 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Python.main" />
+      <item itemvalue="Python.projectclasses" />
+      <item itemvalue="Python.Week8Assignment" />
+      <item itemvalue="Python.Week9" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.Week8Assignment" />

@@ -106,7 +106,7 @@ def main():
     #print(lib.Items)
    # print(LoggedIn)
     while True:
-        print('Options \n 1. Setup \n 2. Search Library\n 3. Add Item To Library \n 4. Display Items\n q. Quit')
+        print('Options \n 1. Setup \n 2. Search Library\n 3. Add Item To Library \n 4. Display Items\n 5. Loan an Item\n q. Quit')
         inp = input()
         if inp =='1':
             setup()
@@ -116,6 +116,8 @@ def main():
            app.lib.add_item()
         elif inp == '4':
             search_by_item_category(app)
+        elif inp == '5':
+            app.lib.create_loan('KvU2JlNkgCWxlcp0','zLt-627-Journal', date.datetime.now)
         elif inp == 'q':
             break
 

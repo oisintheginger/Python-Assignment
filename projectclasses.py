@@ -52,7 +52,7 @@ class Member():
         self.MemberAddress = address
         self.DOB = DOB
         if ID == '':
-            self.MemberID = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+            self.MemberID = ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
         else:
             self.MemberID = ID
 
@@ -80,7 +80,6 @@ class Book(Item):
         self.authors = listofauthors
 
 
-
 class Journal(Book):
     def __init__(self, volume: str, articlelist: list, *args, **kwargs):
         super(Journal, self).__init__(*args, **kwargs)
@@ -94,12 +93,13 @@ class Article(Item):
         self.JournalISBN = journalisbn
         self.authors = listofauthors
 
+'''
 class Loan():
     def __init__(self, MemberID:str, ItemNum:str):
         self.MemberID = MemberID
         self.ItemNumber = ItemNum
         self.LoanRef = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
-
+'''
 
 def memberformatter(member: Member):
     memberdetails = {}
@@ -145,11 +145,6 @@ def jsontoitem(jsondict: dict):
         print(datadict)
 
 
-def loanformatter(loan: Loan):
-    loandetails = {}
-    loandetails['LoanRef'] = loan.LoanRef
-    loandetails['MemberID'] = loan.MemberID
-    loandetails['ItemNum'] = loan.ItemNumber
 
 
 
@@ -209,12 +204,9 @@ class Library():
         province = input('Enter Province')
         country = input('Enter state/country')
         postcode = input('Enter postcode')
-        mem_add =Address(addr1,addr2,town,county,province,country,postcode)
+        mem_add = Address(addr1,addr2,town,county,province,country,postcode)
         newmember = Member(name, mem_add, date_of_birth)
         self.Members[newmember.MemberID] = memberformatter(newmember)
-        print(newmember)
-        print('------------------')
-        print(self.Members[newmember.MemberID])
         self.savedata()
 
     def searchlibraryitems(self):
@@ -365,10 +357,31 @@ class Library():
         loan_dic['item'] = item_id
         loan_dic['due'] = str(return_date)
         new_ref = ''.join(random.choices(string.ascii_lowercase, k=4)) + '-' + ''.join(random.choices(string.digits, k=4))
-
-        loan_dic['reference'] = ''.join(random.choices(string.ascii_lowercase, k=4)) + '-' + ''.join(random.choices(string.digits, k=4))
+        loan_dic['reference'] = new_ref
         self.Loans[new_ref] = loan_dic
         self.savedata()
+
+    def return_loan(self, member: str):
+        results = list()
+        for l in self.Loans:
+            if self.key_val_match('member', member, self.Loans[l]):
+                results.append((l,self.Loans[l]['item'],self.Loans[l]['due']))
+        print("{0}'s Loans Are:".format(self.Members[member]['name']))
+        for i in range(0,len(results)):
+            print('{0}.'.format(i+1), self.Items[results[i][1]]['title'])
+        if len(results)<1:
+            print(self.Members[member]['name'], 'has no loans. Returning.')
+            return
+        inp = request_num_input('Please select the item you wish to return (1 - {0}) ({1} to cancel)'.format(str(len(results)),str(len(results)+1)), True)
+        while inp < 1 or inp > len(results)+1:
+            inp = request_num_input('Invalid selection! Please select the item you wish to return (1 - {0}) ({1} to return)'.format(str(len(results)),str(len(results)+1)), True)
+        if inp == len(results)+1:
+            return
+        else:
+            del self.Loans[results[inp-1][0]]
+            self.savedata()
+
+
 
     def key_val_match(self, key: str, value: str, dic: dict()):
         return dic[key] == value
@@ -394,6 +407,35 @@ Writing
 
 
 class Application():
+
     def __init__(self):
         self.lib = Library('TUDublin Library')
+        self.signed_in_member = ''
+        self.signed_in = False
+
+    def sign_in(self, inp_id: str):
+        names_list = list()
+        for m in self.lib.Members:
+            if m in inp_id:
+                self.signed_in = True
+                self.signed_in_member = m
+                return m
+            elif inp_id == self.lib.Members[m]['name'].lower():
+                names_list.append((m, inp_id))
+        if len(names_list) == 1:
+            self.signed_in_member = names_list[0][0]
+            self.signed_in = True
+            return names_list[0][0]
+        elif len(names_list)>1:
+            for n in range(0,len(names_list)):
+                print(n+1, names_list[n])
+            selection = request_num_input('Please select member to sign in as. ')
+            if selection <1 or selection > len(names_list):
+                print('Invalid selection. Returning')
+                return ''
+            else:
+                self.signed_in_member = names_list[int(selection)-1][0]
+                self.signed_in = True
+                return names_list[int(selection)-1][0]
+        return ''
 

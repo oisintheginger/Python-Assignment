@@ -29,11 +29,24 @@ import random
 import string
 import os.path
 from projectclasses import *
+import webbrowser
 
+#st = '1904148255'
+#webbrowser.open('https://catalogue.nli.ie/Search/Results?lookfor='+st+'&type=AllFields&limit=20&sort=relevance')
 
+'''
+TO DO:
+-> Implement Digital Media Class
+-> Display Item Details Functionality
+-> Modify Article ISBN and Journals Article List (article list should be tuples (article title, article itemnumber)
+-> Create 'Staff Functionality'
+    +Create Member
+    +Create Item
+-> Create Fine Functionality for late returns
+-> search for item on irish library catalogue using url
+'''
 
-
-def setup():
+def setup(lib: Library):
     if os.path.exists(membersdirectory):
         os.remove(membersdirectory)
     if os.path.exists(loansdirectory):
@@ -73,7 +86,24 @@ def setup():
     with open(itemdirectory, 'w') as outfile:
         json.dump(datastream, outfile, indent = 4)
 
-    print()
+    if os.path.exists(membersdirectory):
+        with open(membersdirectory, 'r') as json_file:
+            try:
+                lib.Members = json.loads(json_file.read())
+            except ValueError:
+                lib.Members = {}
+    if os.path.exists(loansdirectory):
+        with open(loansdirectory, 'r') as json_file:
+            try:
+                lib.Loans = json.loads(json_file.read())
+            except ValueError:
+                lib.Loans = {}
+    if os.path.exists(itemdirectory):
+        with open(itemdirectory, 'r') as json_file:
+            try:
+                lib.Items = json.loads(json_file.read())
+            except ValueError:
+                lib.Items = {}
 
 
 
@@ -93,54 +123,72 @@ def search_by_item_category(app: Application):
             break
 
 
+def sign_in_menu(app: Application):
+    inp = input('Please enter a valid member ID number or name')
+    inp = inp.lower()
+    return app.sign_in(inp)
+
+
+def borrow_menu(app: Application, memberid: str):
+    item_list_display = list()
+    unavailable_list = list()
+    for l in app.lib.Loans:
+        unavailable_list.append(app.lib.Loans[l]['item'])
+
+    for a in app.lib.Items:
+        if a not in unavailable_list:
+            item_list_display.append((app.lib.Items[a]['title'], a))
+    if len(item_list_display)<1:
+        print('No Items Available. Returning.')
+        return
+    for i in range(0,len(item_list_display)):
+        print('{0}. '.format(i+1),item_list_display[i][0],'------------', item_list_display[i][1],'\n')
+    inp = request_num_input('Please select the item you would like to borrow', True)
+    if inp in list(range(1, len(item_list_display)+1)):
+        print(item_list_display[inp-1])
+    con = request_num_input('Please confirm this loan request\n 1. Yes \n 2. No', True)
+    if con == 1:
+        app.lib.create_loan(memberid, item_list_display[inp-1][1], date.datetime.today())
+
+
+def return_item_menu(app: Application, memberID:str):
+    app.lib.return_loan(memberID)
+
 
 def main():
-    #setup()
-    #it = Item('This is a title', 'This is a description')
-    #lib = Library('New Library Bro')
-
     app = Application()
-    #app.lib.searchlibraryitems()
-    #app.lib.new_member()
-    #LoggedIn = jsontomember(lib.Members, 'ww7vA3i2J99RMfIc')
-    #print(lib.Items)
-   # print(LoggedIn)
+    signed_in_member = ''
     while True:
-        print('Options \n 1. Setup \n 2. Search Library\n 3. Add Item To Library \n 4. Display Items\n 5. Loan an Item\n q. Quit')
-        inp = input()
-        if inp =='1':
-            setup()
-        elif inp =='2':
-           app.lib.searchlibraryitems()
-        elif inp =='3':
+        if signed_in_member in app.lib.Members:
+            print(('Signed in as {0}, {1}'.format(app.lib.Members[signed_in_member]['name'], signed_in_member))*app.signed_in)
+        print('Options \n 1. Setup \n 2. Sign In '
+              '\n 3. Search Library \n 4. Add Item To Library '
+              '\n 5. Display Items \n 6. Loan an Item'
+              '\n 7. Return an Item \n q. Quit')
+        inp = request_num_input('', True)
+        if inp ==1:
+            setup(app.lib)
+        elif inp == 2:
+            signed_in_member = sign_in_menu(app)
+        elif inp == 3:
+            app.lib.searchlibraryitems()
+        elif inp ==4:
            app.lib.add_item()
-        elif inp == '4':
+        elif inp == 5:
             search_by_item_category(app)
-        elif inp == '5':
-            app.lib.create_loan('KvU2JlNkgCWxlcp0','zLt-627-Journal', date.datetime.now)
-        elif inp == 'q':
+        elif inp == 6:
+            if not app.signed_in:
+                print('Must Be Signed in to borrow a book')
+                continue
+            borrow_menu(app, signed_in_member)
+        elif inp == 7:
+            if not app.signed_in:
+                print('Must Be Signed in to Return a book')
+                continue
+            return_item_menu(app, signed_in_member)
+        else:
             break
-
-
-
-
 
 
 if __name__ == '__main__':
     main()
-
-    '''
-
-    if os.path.exists('members.json'):
-        with open('members.json') as json_file:
-            datastream = json.load(json_file)
-            #stringggg = json.dumps(datastream)
-            print(datastream)
-    add = Address('no','no','yare yare','no','no','no','no')
-    mem = Member('Philip', add, date.datetime.now())
-    datastream[mem.MemberID] = memberformatter(mem)
-    print(datastream)
-    with open('members.json', 'w') as outfile:
-        json.dump(datastream, outfile)
-    #file1 = open("MembersFile.json", "a+")
-    '''

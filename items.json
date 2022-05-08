@@ -1,6 +1,6 @@
 {
-    "uNY-637-Book": {
-        "itemnumber": "uNY-637-Book",
+    "osY-703-Book": {
+        "itemnumber": "osY-703-Book",
         "title": "The Wind and the Willows",
         "description": "An old story that I do not know the plot of.",
         "type": "Book",
@@ -10,8 +10,8 @@
             "Author of the Book"
         ]
     },
-    "zLt-627-Journal": {
-        "itemnumber": "zLt-627-Journal",
+    "pch-609-Journal": {
+        "itemnumber": "pch-609-Journal",
         "title": "New England Journal of Medicine",
         "description": "A journal that is about medicine",
         "type": "Journal",
@@ -25,8 +25,8 @@
             "article1"
         ]
     },
-    "VsC-218-Article": {
-        "itemnumber": "VsC-218-Article",
+    "eDR-339-Article": {
+        "itemnumber": "eDR-339-Article",
         "title": "Funny Article Title",
         "description": "Describing the funny article",
         "type": "Article",
@@ -36,19 +36,5 @@
             "Article Author 2",
             "Article Author 3"
         ]
-    },
-    "rXp-998-Journal": {
-        "itemnumber": "rXp-998-Journal",
-        "title": "fancy journal",
-        "description": "this is the description of the fancy journal",
-        "type": "Journal",
-        "isbn": "23334-23421",
-        "publisher": "elsevier",
-        "authors": [
-            "john",
-            "mary"
-        ],
-        "volume": "1",
-        "articlelist": []
     }
 }

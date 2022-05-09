@@ -926,24 +926,6 @@ class Library:
 
 
 
-
-'''
-Reading
-        if os.path.exists(membersdirectory):
-            with open(membersdirectory, 'r') as json_file:
-                try:
-                    self.Members = json.loads(json_file.read())
-                except ValueError:
-                    self.Members = {}
-                    
-Writing 
-        with open(membersdirectory, 'w') as outfile:
-            json.dump(datastream, outfile, indent = 4)
-
-                    
-'''
-
-
 class Application():
     """
     The Application class, hosts an instance of the library class, and manages the currently signed in member.

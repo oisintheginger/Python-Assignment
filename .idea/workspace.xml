@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="056caa0d-9572-4253-ab3e-0ccad3b815be" name="Changes" comment="Finishing All Basic Functions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/loans.json" beforeDir="false" afterPath="$PROJECT_DIR$/loans.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/projectclasses.py" beforeDir="false" afterPath="$PROJECT_DIR$/projectclasses.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +97,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\oisin\anaconda3\envs\LabWork Project\python.exe" />
+      <option name="SDK_HOME" value="C:\Users\oisin\.conda\envs\pythonProject\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />

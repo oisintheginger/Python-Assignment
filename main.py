@@ -34,17 +34,26 @@ import webbrowser
 '''
 TO DO:
 -> Create Fine Functionality for late returns
--> Delete Members / Items
 
 '''
 
 
 def setup(lib: Library):
+    """
+        An automated function that creates an instance of an application,
+        which holds the sign-in information and an instance of a library.
+        Also creates a selection of starter members and starter items, writing them to json files.
+        Args:
+            lib (Library): instance of a Library to set up
+    """
     if os.path.exists(membersdirectory):
         os.remove(membersdirectory)
     if os.path.exists(loansdirectory):
         os.remove(loansdirectory)
+    if os.path.exists(itemdirectory):
+        os.remove(itemdirectory)
 
+    #Creating Starting Members and Addresses
     PhilipAdd = Address('8024', 'Doyle Avenue', 'Roscommon Town', 'Roscommon', 'Munster', 'Ireland', 'A73MX91')
     Philip = Member('Philip', PhilipAdd, date.datetime.now())
 
@@ -57,15 +66,18 @@ def setup(lib: Library):
     ChloeAdd = Address('27', 'Mill Lane', 'Trim', 'Meath', 'Leinster', 'Ireland', 'P92VI65')
     Chloe = Member('Mary', ChloeAdd, date.datetime.now())
 
+    #creating a dictionary of members. Members are formatted using the memberformatter function
     datastream = dict()
     datastream[Philip.MemberID] = memberformatter(Philip)
     datastream[Mary.MemberID] = memberformatter(Mary)
     datastream[Jim.MemberID] = memberformatter(Jim)
     datastream[Chloe.MemberID] = memberformatter(Chloe)
 
+    #writing the datastream dictionary to the membersdirectory file
     with open(membersdirectory, 'w') as outfile:
         json.dump(datastream, outfile, indent = 4)
 
+    #repeating previous steps to create library inventory
     datastream = dict()
     newItem = Book('X49932-18839', 'Penguin', ['Author of the Book'], 'The Wind and the Willows','An old story that I do not know the plot of.')
 
@@ -79,6 +91,7 @@ def setup(lib: Library):
     with open(itemdirectory, 'w') as outfile:
         json.dump(datastream, outfile, indent = 4)
 
+    #setting the refreshing the library data dictionaries, by reading the files just saved to
     if os.path.exists(membersdirectory):
         with open(membersdirectory, 'r') as json_file:
             try:
@@ -100,6 +113,12 @@ def setup(lib: Library):
 
 
 def search_by_item_category(app: Application):
+    """
+    A buffer method that acts as a menu to display items by type. Uses an app as a parameter,
+    so to access its library to use its display_items_of_type method
+    Args:
+        app (Application): instance of an application that holds the current library
+    """
     while True:
         print('Display By: \n 1. Book \n 2. Journal\n 3. Article \n 4. Digital Media \n q. Return')
         inp = input()
@@ -116,12 +135,26 @@ def search_by_item_category(app: Application):
 
 
 def sign_in_menu(app: Application):
+    """
+    Buffer method to sign in as a library member
+    Args:
+        app (Application): instance of an application that will hold sign-in information
+    """
     inp = input('Please enter a valid member ID number or name')
     inp = inp.lower()
     return app.sign_in(inp)
 
 
 def borrow_menu(app: Application, memberid: str):
+    """
+    The borrow menu both displays available items and creates the loan entries in the library's
+    loans directory. It cancels if there are no available items.
+    Args:
+        app (Application): instance of an application
+        memberid (str): member ID string for use in the borrowing function.
+
+    """
+    #creates a list of available items and prints them in a menu
     item_list_display = list()
     unavailable_list = list()
     for l in app.lib.Loans:
@@ -142,14 +175,28 @@ def borrow_menu(app: Application, memberid: str):
         print(item_list_display[inp-1])
     con = request_num_input('Please confirm this loan request\n 1. Yes \n 2. No', True)
     if con == 1:
-        app.lib.create_loan(memberid, item_list_display[inp-1][1], date.datetime.today())
+        app.lib.create_loan(memberid, item_list_display[inp-1][1], date.datetime.today() + date.timedelta(weeks=2))
 
 
 def return_item_menu(app: Application, memberID:str):
+    """
+    Accesses the library's return_loan method, passing in the currently signed in member as a parameter.
+    Args:
+        app (Application): instance of an application
+        memberid (str): member ID string for use in the return item function.
+    """
     app.lib.return_loan(memberID)
 
 
 def staff_functions_menu(app: Application):
+    """
+    The staff functions are locked away in a separate menu. If there were to be a full implementation,
+    this would be locked with a password. However, due to the scale of this project, this would make it slower
+    to test.
+    Functions include the creation/destruction of members and items within the library files.
+    Args:
+        app (Application): instance of an application
+    """
     print('Choose an option:')
     options = ['Create Member','Create Item','Delete Member', 'Delete Item', 'Return']
     c = numbered_menu(options)
@@ -167,6 +214,9 @@ def staff_functions_menu(app: Application):
 
 
 def main():
+    """
+    Entry point to the application. Displays the options available to the user.
+    """
     app = Application()
     signed_in_member = ''
     while True:

@@ -4,13 +4,19 @@ import string
 import os
 import json
 
-
+#Directories to avoid spelling errors.
 membersdirectory = './members.json'
 loansdirectory = './loans.json'
 itemdirectory = './items.json'
 
 
 def request_num_input(inp: str, intorfloat = False):
+    """
+    A utility function that returns an integer or float from a user input.
+    Args:
+        inp (str): This is the input message i.e 'Enter age'
+        intorfloat (bool): Determines to return an integer or float. True for integer, defaults to false.
+    """
     while True:
         response = input(inp)
         if intorfloat is False:
@@ -29,7 +35,18 @@ def request_num_input(inp: str, intorfloat = False):
 
 
 class Address():
+    """A container class to help create addresses."""
     def __init__(self, AddressLine1:str, AddressLine2:str, Town:str, County:str, Province:str, Country:str, Postcode:str):
+        """
+        Args:
+            AddressLine1 (str): first line of address
+            AddressLine2 (str): second line of address
+            Town (str): Town of address
+            County (str): County of address
+            Province (str): Province of address
+            Country (str): Country of address
+            Postcode (str): Postcode of address
+        """
         self.AddressLine1 = AddressLine1
         self.AddressLine2 = AddressLine2
         self.Town = Town
@@ -43,7 +60,17 @@ class Address():
 
 
 class Member():
+    """
+    The defining class of a member, which makes it easier to convert into data via the memberformatter function.
+    """
     def __init__(self, Name: str, address: Address, DOB: date.datetime, ID =''):
+        """
+        Args:
+            Name (str): the name of the member.
+            address (Address): the address of the member.
+            DOB (date.datetime): the date of birth of the user.
+            ID (str): this is the ID of the member, if no argument given, a random sequence will be used.
+        """
         self.Name = Name
         self.MemberAddress = address
         self.DOB = DOB
@@ -57,8 +84,25 @@ class Member():
 
 
 class Item():
+    """
+    The defining parent class of all types of items.
+
+    Attributes:
+    title : str
+        This is the title of the item
+    description : str
+        This is the description of the item
+    itemnum : str
+        This is the unique identifier for the item
+    """
+
     def __init__(self, title: str, description: str, itemnum = ' '):
-        '''description: str'''
+        """
+        Args:
+            title (str): This is the title of the item
+            description (str): This is the description of the item
+            itemnum (str): This is the id number for the item within the system. If no argument is given, a randomised string sequence is generated.
+        """
         if itemnum == ' ':
             self.ItemNum = ''.join(random.choices(string.ascii_letters, k=3)) +'-'+''.join(random.choices(string.digits, k=3)) +'-'+ type(self).__name__
         else:
@@ -68,8 +112,33 @@ class Item():
 
 
 class Book(Item):
+    """
+    Book class inherits from the parent Item class
+
+    Attributes:
+        isbn : str
+            This is the ISBN (International Standard Book Number) of the book
+        publisher : str
+            This is the publisher of the book
+        list of authors : list
+            This is a list of authors of the book
+        title : str
+            This is the title of the item
+        description : str
+            This is the description of the item
+        itemnum : str
+            This is the unique identifier for the item
+    """
     def __init__(self, ISBN: str, publisher: str, listofauthors: list, *args, **kwargs):
-        '''title: str, isbn:str , publisher:str , list of authors: list, description: str'''
+        """
+        ISBN, publisher, listofauthors, title, description
+
+        Args:
+            ISBN (str): This is the ISBN (International Standard Book Number) of the book.
+            publisher (str): This is the publisher of the book.
+            listofauthors (list): This is a list of authors of the book.
+            *args (str): Title-This is the title of the item, description - This is the description of the item, itemnum - This is the unique identifier for the item.
+        """
         super(Book, self).__init__(*args, **kwargs)
         self.ISBN = ISBN
         self.publisher = publisher
@@ -77,21 +146,99 @@ class Book(Item):
 
 
 class Journal(Book):
+    """
+        Journal class inherits from the parent Item class
+
+        Attributes:
+            volume : str
+                This is the volume of the journal
+            articlelist: list
+                This is the list of articles that belong to the journal that can be found in the library inventory
+            isbn : str
+                This is the ISBN (International Standard Book Number) of the journal
+            publisher : str
+                This is the publisher of the journal
+            list of authors : list
+                This is a list of authors of the journal
+            title : str
+                This is the title of the journal
+            description : str
+                This is the description of the journal
+            itemnum : str
+                This is the unique identifier for the journal
+    """
     def __init__(self, volume: str, articlelist: list, *args, **kwargs):
+        """
+            volume, article listISBN, publisher, listofauthors, title, description
+
+            Args:
+                volume (str): the volume number of the journal
+                articlelist (list): This is the list of articles that belong to the journal that can be found in the library inventory
+                *args (str):ISBN- This is the ISBN of the Journal, Publisher - this is the publisher of the journal, listofauthors- this is the list of authors Title-This is the title of the item, description - This is the description of the item, itemnum - This is the unique identifier for the item.
+        """
         super(Journal, self).__init__(*args, **kwargs)
         self.volume = volume
         self.articlelist = articlelist
 
 
 class Article(Item):
+    """
+        Article class inherits from the parent Item class
+
+        Attributes:
+            journalisbn : str
+                This is the ISBN (International Standard Book Number) of the journal the article belongs to
+            list of authors : list
+                This is a list of authors of the article
+            title : str
+                This is the title of the article
+            description : str
+                This is the description of the article
+            itemnum : str
+                This is the unique identifier for the article
+    """
     def __init__(self, journalisbn: Journal, listofauthors: list, *args, **kwargs):
+        """
+            Journal ISBN, listofauthors, title, description
+
+            Args:
+                journalisbn (str): This is the ISBN of the journal the article belongs to.
+                listofauthors (list): This is a list of authors of the book.
+                *args (str): Title-This is the title of the item, description - This is the description of the item, itemnum - This is the unique identifier for the item.
+        """
         super(Article, self).__init__(*args, **kwargs)
         self.JournalISBN = journalisbn
         self.authors = listofauthors
 
 
 class Digital(Item):
+    """
+        Digital class inherits from the parent Item class
+
+        Attributes:
+            file_type : str
+                This is the file type of the digital media
+            format : str
+                This is the format of the digital media
+            creator : str
+                This is the creator of the digital media
+            title : str
+                This is the title of the digital media
+            description : str
+                This is the description of the digital media
+            itemnum : str
+                This is the unique identifier for the digital media
+    """
     def __init__(self, file_type: str, format: str, creator: str, *args, **kwargs):
+        """
+            file_type, format, creator, listofauthors, title, description
+
+            Args:
+                file_type (str): This is the file extension of the digital media.
+                format (list): This is the format of the digital media.
+                creator (list): This is the creator of the digital media.
+                *args (str): Title-This is the title of the item, description - This is the description of the item, itemnum - This is the unique identifier for the item.
+        """
         super(Digital, self).__init__(*args, **kwargs)
         self.file_type = file_type
         self.format = format
@@ -99,6 +246,14 @@ class Digital(Item):
 
 
 def memberformatter(member: Member):
+    """
+    Decodes an instance of the member class into a dictionary, so that it may be written into a json file. Returns a dictionary.
+    Args:
+        member (Member): This is the Member instance that is to be decoded into a json-legible dictionary.
+
+    Returns:
+        A dictionary representing member data
+    """
     memberdetails = {}
     memberdetails['name'] = member.Name
     memberdetails['address'] = [member.MemberAddress.AddressLine1, member.MemberAddress.AddressLine2, member.MemberAddress.Town, member.MemberAddress.County, member.MemberAddress.Province, member.MemberAddress.Country, member.MemberAddress.Postcode]
@@ -107,6 +262,14 @@ def memberformatter(member: Member):
 
 
 def jsontomember(jsondictionary: dict, memberID: str):
+    """
+    Decodes a dictionary to construct an instanceof the member class. Returns an instance of the member class.
+    Args:
+        jsondictionary (dict): This is the dictionary that represents the member to create an instance of
+        memberID (str): The id of the member we wish to instantiate
+    Returns:
+        Instance of member class representative of saved member data
+    """
     memberdatadict = jsondictionary[memberID]
     dataname = memberdatadict['name']
     dataaddress = Address(memberdatadict['address'][0], memberdatadict['address'][1], memberdatadict['address'][2], memberdatadict['address'][3], memberdatadict['address'][4],memberdatadict['address'][5],memberdatadict['address'][6])
@@ -115,6 +278,14 @@ def jsontomember(jsondictionary: dict, memberID: str):
     return returnable
 
 def itemformatter(item: Item):
+    """
+    Decodes an instance of the item class into a dictionary, so that it may be written into a json file. Returns a dictionary.
+    Args:
+        item (Item): This is the Item instance that is to be decoded into a json-legible dictionary.
+
+    Returns:
+        A dictionary representing item data
+    """
     itemdetails = {}
     itemdetails['itemnumber'] = item.ItemNum
     itemdetails['title'] = item.title
@@ -142,12 +313,25 @@ def itemformatter(item: Item):
 
 
 def jsontoitem(jsondict: dict):
+    """
+    [DEPRECATED]
+    Decodes a dictionary to construct an instance of the item class. Returns an instance of the item class.
+    Args:
+        jsondict (dict): This is the dictionary that represents the item to create an instance of.
+    """
     for i in jsondict:
         datadict = jsondict[i]
         print(datadict)
 
 
 def numbered_menu(l: list):
+    """
+    Utility class that automatically generates a menu from a list of options, and guarantees user input reflects index within option range.
+    Args:
+        l (list): This is the list of options to create a menu from.
+    Returns:
+        user input -1, which can be used as a selection index.
+    """
     for i in range(0, len(l)):
         print('{0}. {1}'.format(i+1, l[i]))
 
@@ -158,6 +342,13 @@ def numbered_menu(l: list):
 
 
 def list_of_strings(message: str):
+    """
+    Utility class that asks for a non-specified number of string inputs. It is used for creating multiple authors.
+    Args:
+        message (str): This is the prompt that will be used for the user input.
+    Returns:
+        newlist, the list of strings the user has created.
+    """
     newlist = list()
     while True:
         inp = input(message +' (q to quit)')
@@ -167,12 +358,33 @@ def list_of_strings(message: str):
     return newlist
 
 
-def print_dic(d : dict):
+def print_dic(d: dict):
+    """"
+    Utility class that prints a dictionary in a slightly easier to read format.
+    Args:
+        d (dict): The dictionary to print out
+    """
     for a in d:
         print('{0}:    {1}'.format(a, d[a]))
 
-class Library():
+
+class Library:
+    """
+    The Library class, hosts the data of the library system i.e. Members, Items, and Loans directory.
+
+    Attributes:
+        Name (str): name of library
+        Members (dict): dictionary of members
+        Loans (dict): dictionary of loans
+        Items (dict): dictionary of items
+    """
     def __init__(self, name: str):
+        """
+        Creates instance of the library class. Populates the members,items, and loans directories by reading from disk.
+
+        Args:
+            name (str): the name of the library
+        """
         self.Name = name
         self.Members = {}
         if os.path.exists(membersdirectory):
@@ -197,6 +409,9 @@ class Library():
                     self.Items = {}
 
     def savedata(self):
+        """
+        Utility function that allows for easier writing of data to disk.
+        """
         with open(membersdirectory, 'w') as outfile:
             json.dump(self.Members, outfile, indent=4)
         with open(itemdirectory, 'w') as outfile:
@@ -205,6 +420,9 @@ class Library():
             json.dump(self.Loans, outfile, indent=4)
 
     def new_member(self):
+        """
+        Method to creating and entering a new member into the library's files. Is accessed through the application.
+        """
         name = input('Enter Name for Member')
         year = request_num_input('Please enter the year you were born', True)
         month = request_num_input('Please enter the month you were born', True)
@@ -223,6 +441,9 @@ class Library():
         self.savedata()
 
     def delete_member(self):
+        """
+        Method to removing a new member from the library's files. Is accessed through the application. Cancels if the member has outstanding loans.
+        """
         if len(self.Members) <1:
             print("Library Doesn't have any members yet!")
             return
@@ -246,9 +467,10 @@ class Library():
                 self.savedata()
 
     def searchlibraryitems(self):
-        results_dic = {}
+        """
+        Searches through the items in the library using user input as search terms. Borrowed and adapted from my previous assigment.
+        """
         search_results = list()
-        search_results_string = list()
         search_term = input("Please enter keyword for search\n").lower()
         search_term = search_term.strip()
         inclusive = False
@@ -317,7 +539,6 @@ class Library():
                 if search_term == 'q':
                     return 0
 
-
         for i in range(0, len(search_results)):
             print(self.Items[search_results[i]]['title'])
 
@@ -334,6 +555,9 @@ class Library():
             print_dic(self.Items[todisplay])
 
     def add_item(self):
+        """
+        Method to creating and entering a new item into the library's files. Acts as a menu for other specialised functions. Is accessed through the application.
+        """
         while True:
             print('Choose Item To Add \n 1. Book \n 2. Journal \n 3. Article \n 4. Digital Media \n q Quit')
             inp = input()
@@ -351,6 +575,9 @@ class Library():
                 print('Please enter a valid option')
 
     def delete_item(self):
+        """
+        Method to removing a new item from the library's files. Is accessed through the application. Cancels if the item has outstanding loans.
+        """
         if len(self.Items) <1:
             print("Library Doesn't have any items yet!")
             return
@@ -374,6 +601,9 @@ class Library():
                 self.savedata()
 
     def create_book(self):
+        """
+        Specialised Function for transforming user input into a book instance, and entry into the library's item directory.
+        """
         title = input('Enter Name for Book')
         description = input('Enter Description for Book')
         authors = list_of_strings('Enter Author Name')
@@ -382,12 +612,12 @@ class Library():
 
         newbook = Book(isbn, publisher, authors, title, description)
         self.Items[newbook.ItemNum] = itemformatter(newbook)
-        print(newbook)
-        print('------------------')
-        print(self.Items[newbook.ItemNum])
         self.savedata()
 
     def create_journal(self):
+        """
+        Specialised Function for transforming user input into a journal instance, and entry into the library's item directory.
+        """
         title = input('Enter Name for Journal')
         description = input('Enter Description for Journal')
         authors = list_of_strings('Enter Author Name')
@@ -400,6 +630,9 @@ class Library():
         self.savedata()
 
     def create_article(self):
+        """
+        Specialised Function for transforming user input into an article instance, and entry into the library's item directory.
+        """
         title = input('Enter Name for Article')
         description = input('Enter Description for Article')
         authors = list_of_strings('Enter Author Name')
@@ -409,6 +642,9 @@ class Library():
         self.savedata()
 
     def create_digital(self):
+        """
+        Specialised Function for transforming user input into a digital media instance, and entry into the library's item directory.
+        """
         title = input('Enter Name for Digital Media')
         description = input('Enter Description for Digital Media')
         creator = input('Enter Creator for Digital Media')
@@ -423,6 +659,12 @@ class Library():
         self.savedata()
 
     def display_items_of_type(self, itemtype: Item):
+        """
+        Utility function to create a list of items of a particular type in the library directory.
+
+        Args:
+            itemtype (Item): the type of item to display
+        """
         result_list = list()
         for a in self.Items:
             if self.key_val_match('type',itemtype.__name__,self.Items[a]) is True:
@@ -431,6 +673,14 @@ class Library():
             print(r)
 
     def create_loan(self, member_id: str, item_id, return_date: date.datetime):
+        """
+        Takes a member and an item and creates an entry in the library's loan directory to store the data. Used in lieu of a dedicated Loan class, as it is unnecessary for function.
+
+        Args:
+            member_id (str): ID of the member who is taking out the loan.
+            item_id (str): ID of the member who is being loaned out.
+            return_date (date.datetime): the date the Loan is due to be returned at.
+        """
         loan_dic = dict()
         loan_dic['member'] = member_id
         loan_dic['item'] = item_id
@@ -441,6 +691,12 @@ class Library():
         self.savedata()
 
     def return_loan(self, member: str):
+        """
+        Takes a member and displays their outstanding loans. User can then choose to return a loaned item.
+
+        Args:
+            member (str): ID of the member who is returning the item.
+        """
         results = list()
         for l in self.Loans:
             if self.key_val_match('member', member, self.Loans[l]):
@@ -461,6 +717,15 @@ class Library():
             self.savedata()
 
     def get_items_of_type(self, itemtype: Item):
+        """
+        Similar to the display_items_of_type method, however, this method returns a list of those items.
+
+        Args:
+            itemtype (Item): The type of item to be returned.
+
+        Returns:
+            result_list of all items of given type.
+        """
         result_list = list()
         for a in self.Items:
             if self.key_val_match('type', itemtype.__name__, self.Items[a]) is True:
@@ -468,6 +733,9 @@ class Library():
         return result_list
 
     def modify_items(self):
+        """
+        Method for modifying items within the library.
+        """
         print('Choose an Option')
         options= ['Modify Article','Modify Journal','Modify Book','Modify Digital Media', 'Return']
         c = numbered_menu(options)
@@ -483,6 +751,11 @@ class Library():
             return
 
     def modify_item_type(self, itemtype: Item):
+        """
+        Method for modify the items, broken from modify_item to increase readability, although, it may be compacted into one method without issue.
+        Args:
+            itemtype (Item): the type of item to modify.
+        """
         items = self.get_items_of_type(itemtype)
         if len(items) < 1:
             print('No Items of Type to Modify')
@@ -505,6 +778,12 @@ class Library():
             return
 
     def mod_article(self, item_num: str):
+        """
+        Method for modifying an individual article. Displays all relevant details, and presents the user with options to modify.
+
+        Args:
+            item_num (str): The item number of the article to modify.
+        """
         print_dic(self.Items[item_num])
         print('Choose an Option')
         options = ["Modify Article's Journal ISBN", 'Modify Article Authors', 'Modify Title', 'Modify Description','Cancel']
@@ -513,10 +792,12 @@ class Library():
             new_ISBN = input('Enter new ISBN').lower()
             self.Items[item_num]['journalisbn'] = new_ISBN
             self.savedata()
+            return
         if c == 1:
             new_authors = list_of_strings('Enter New List of Authors')
             self.Items[item_num]['authors'] = new_authors
             self.savedata()
+            return
         if c == 2:
             new_title = input('Enter new title')
             self.Items[item_num]['title'] = new_title
@@ -531,6 +812,12 @@ class Library():
             return
 
     def mod_journal(self, item_num: str):
+        """
+        Method for modifying an individual journal. Displays all relevant details, and presents the user with options to modify.
+
+        Args:
+            item_num (str): The item number of the journal to modify.
+        """
         print_dic(self.Items[item_num])
         print('Choose an Option')
         options = ["Modify Journal ISBN", 'Modify Journal Authors', 'Populate Article List from Library Inventory','Modify Title', 'Modify Description','Cancel']
@@ -570,6 +857,12 @@ class Library():
             return
 
     def mod_book(self, item_num:str):
+        """
+        Method for modifying an individual book. Displays all relevant details, and presents the user with options to modify.
+
+        Args:
+            item_num (str): The item number of the book to modify.
+        """
         print_dic(self.Items[item_num])
         print('Choose an Option')
         options = ["Modify Book ISBN", 'Modify Book Authors','Modify Title', 'Modify Description','Cancel']
@@ -597,6 +890,12 @@ class Library():
             return
 
     def mod_digital(self, item_num:str):
+        """
+        Method for modifying an individual digital media. Displays all relevant details, and presents the user with options to modify.
+
+        Args:
+            item_num (str): The item number of the digital media to modify.
+        """
         print_dic(self.Items[item_num])
         print('Choose an Option')
         options = ["Modify Title", 'Modify Description', 'Cancel']
@@ -615,6 +914,14 @@ class Library():
             return
 
     def key_val_match(self, key: str, value: str, dic: dict()):
+        """
+        Utility function to check if the a dictionary value is equal to a given value
+
+        Args:
+            key (str): key to access value within dic dictionary.
+            value (str): value we wish to compare against the dictionary's value.
+            dic (dict): the dictionary we wish to compare against.
+        """
         return dic[key] == value
 
 
@@ -638,13 +945,29 @@ Writing
 
 
 class Application():
+    """
+    The Application class, hosts an instance of the library class, and manages the currently signed in member.
 
+    Attributes:
+        lib (Library): instance of the library
+        signed_in_member (str): Member ID of the currently signed in member
+        signed_in (bool): indicator to whether a member is 'signed-in'
+    """
     def __init__(self):
         self.lib = Library('TUDublin Library')
         self.signed_in_member = ''
         self.signed_in = False
 
     def sign_in(self, inp_id: str):
+        """
+        Method for signing in. Uses two methodologies. Searches both through names and member ID's within the Library's members directory.
+        In the case where there are two people of the same name, those results are appended to a list. The user can then choose to pick a member to sign in as.
+
+        Args:
+            inp_id (str): The input string which can be a member ID or a member name.
+        Returns:
+            member id as a string, or if none found, returns an empty string.
+        """
         names_list = list()
         for m in self.lib.Members:
             if m in inp_id:

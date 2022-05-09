@@ -1,40 +1,44 @@
 {
-    "osY-703-Book": {
-        "itemnumber": "osY-703-Book",
-        "title": "The Wind and the Willows",
+    "Qjx-678-Book": {
+        "itemnumber": "Qjx-678-Book",
+        "title": "The Lord of The Rings",
         "description": "An old story that I do not know the plot of.",
         "type": "Book",
         "isbn": "X49932-18839",
         "publisher": "Penguin",
         "authors": [
-            "Author of the Book"
+            "J.R.R Tolkien"
         ]
     },
-    "pch-609-Journal": {
-        "itemnumber": "pch-609-Journal",
-        "title": "New England Journal of Medicine",
-        "description": "A journal that is about medicine",
-        "type": "Journal",
-        "isbn": "XHSHBF-BGHBG",
-        "publisher": "Elsevier",
-        "authors": [
-            "Compiled By"
-        ],
-        "volume": 1,
-        "articlelist": [
-            "article1"
-        ]
-    },
-    "eDR-339-Article": {
-        "itemnumber": "eDR-339-Article",
-        "title": "Funny Article Title",
+    "Afx-009-Article": {
+        "itemnumber": "Afx-009-Article",
+        "title": "Modified Article Title",
         "description": "Describing the funny article",
         "type": "Article",
         "journalisbn": "XHSHBF-BGHBG",
         "authors": [
-            "Article Author 1",
-            "Article Author 2",
-            "Article Author 3"
+            "jumbo",
+            "jay",
+            "jim",
+            "bob"
         ]
+    },
+    "PkC-915-Digital": {
+        "itemnumber": "PkC-915-Digital",
+        "title": "Modify Test",
+        "description": "This is a test of the modify system",
+        "type": "Digital",
+        "format": "VIDEO_FILE",
+        "file_type": "MP4",
+        "creator": "me"
+    },
+    "nXa-200-Digital": {
+        "itemnumber": "nXa-200-Digital",
+        "title": "This is a test of the staff functions",
+        "description": "test description",
+        "type": "Digital",
+        "format": "VIDEO_FILE",
+        "file_type": "MP4",
+        "creator": "pamela"
     }
 }

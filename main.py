@@ -31,20 +31,13 @@ import os.path
 from projectclasses import *
 import webbrowser
 
-#st = '1904148255'
-#webbrowser.open('https://catalogue.nli.ie/Search/Results?lookfor='+st+'&type=AllFields&limit=20&sort=relevance')
-
 '''
 TO DO:
--> Implement Digital Media Class
--> Display Item Details Functionality
--> Modify Article ISBN and Journals Article List (article list should be tuples (article title, article itemnumber)
--> Create 'Staff Functionality'
-    +Create Member
-    +Create Item
 -> Create Fine Functionality for late returns
--> search for item on irish library catalogue using url
+-> Delete Members / Items
+
 '''
+
 
 def setup(lib: Library):
     if os.path.exists(membersdirectory):
@@ -106,10 +99,9 @@ def setup(lib: Library):
                 lib.Items = {}
 
 
-
 def search_by_item_category(app: Application):
     while True:
-        print('Display By: \n 1. Book \n 2. Journal\n 3. Article \n 4. OtherMedia(not implemented yet) \n q. Return')
+        print('Display By: \n 1. Book \n 2. Journal\n 3. Article \n 4. Digital Media \n q. Return')
         inp = input()
         if inp =='1':
             app.lib.display_items_of_type(Book)
@@ -118,7 +110,7 @@ def search_by_item_category(app: Application):
         elif inp =='3':
             app.lib.display_items_of_type(Article)
         elif inp == '4':
-            app.lib.display_items_of_type(Item)
+            app.lib.display_items_of_type(Digital)
         elif inp == 'q':
             break
 
@@ -134,7 +126,6 @@ def borrow_menu(app: Application, memberid: str):
     unavailable_list = list()
     for l in app.lib.Loans:
         unavailable_list.append(app.lib.Loans[l]['item'])
-
     for a in app.lib.Items:
         if a not in unavailable_list:
             item_list_display.append((app.lib.Items[a]['title'], a))
@@ -143,7 +134,10 @@ def borrow_menu(app: Application, memberid: str):
         return
     for i in range(0,len(item_list_display)):
         print('{0}. '.format(i+1),item_list_display[i][0],'------------', item_list_display[i][1],'\n')
-    inp = request_num_input('Please select the item you would like to borrow', True)
+    inp = request_num_input('Please select the item you would like to borrow (another number to quit)', True)
+    if inp < 1 or inp >= len(item_list_display):
+        print('Cancelling')
+        return
     if inp in list(range(1, len(item_list_display)+1)):
         print(item_list_display[inp-1])
     con = request_num_input('Please confirm this loan request\n 1. Yes \n 2. No', True)
@@ -155,6 +149,23 @@ def return_item_menu(app: Application, memberID:str):
     app.lib.return_loan(memberID)
 
 
+def staff_functions_menu(app: Application):
+    print('Choose an option:')
+    options = ['Create Member','Create Item','Delete Member', 'Delete Item', 'Return']
+    c = numbered_menu(options)
+    if c == 0:
+        app.lib.new_member()
+    if c == 1:
+        app.lib.add_item()
+    if c == 2:
+        app.lib.delete_member()
+    if c == 3:
+        app.lib.delete_item()
+    else:
+        return
+
+
+
 def main():
     app = Application()
     signed_in_member = ''
@@ -162,9 +173,9 @@ def main():
         if signed_in_member in app.lib.Members:
             print(('Signed in as {0}, {1}'.format(app.lib.Members[signed_in_member]['name'], signed_in_member))*app.signed_in)
         print('Options \n 1. Setup \n 2. Sign In '
-              '\n 3. Search Library \n 4. Add Item To Library '
+              '\n 3. Search Library \n 4. Staff Functions '
               '\n 5. Display Items \n 6. Loan an Item'
-              '\n 7. Return an Item \n q. Quit')
+              '\n 7. Return an Item \n 8. Modify Item \n *. Quit')
         inp = request_num_input('', True)
         if inp ==1:
             setup(app.lib)
@@ -173,7 +184,7 @@ def main():
         elif inp == 3:
             app.lib.searchlibraryitems()
         elif inp ==4:
-           app.lib.add_item()
+            staff_functions_menu(app)
         elif inp == 5:
             search_by_item_category(app)
         elif inp == 6:
@@ -186,6 +197,8 @@ def main():
                 print('Must Be Signed in to Return a book')
                 continue
             return_item_menu(app, signed_in_member)
+        elif inp == 8:
+            app.lib.modify_items()
         else:
             break
 

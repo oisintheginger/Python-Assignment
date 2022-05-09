@@ -5,12 +5,10 @@ import os
 import json
 
 
-
-
-
 membersdirectory = './members.json'
 loansdirectory = './loans.json'
 itemdirectory = './items.json'
+
 
 def request_num_input(inp: str, intorfloat = False):
     while True:
@@ -30,7 +28,6 @@ def request_num_input(inp: str, intorfloat = False):
     return response
 
 
-
 class Address():
     def __init__(self, AddressLine1:str, AddressLine2:str, Town:str, County:str, Province:str, Country:str, Postcode:str):
         self.AddressLine1 = AddressLine1
@@ -43,7 +40,6 @@ class Address():
 
     def __str__(self):
         return '\n{0}\n{1}\n{2}\n{3}\n{4}\n{5}\n{6}\n'.format(self.AddressLine1, self.AddressLine2, self.Town, self.County, self.Province, self.Country, self.Postcode)
-
 
 
 class Member():
@@ -93,13 +89,14 @@ class Article(Item):
         self.JournalISBN = journalisbn
         self.authors = listofauthors
 
-'''
-class Loan():
-    def __init__(self, MemberID:str, ItemNum:str):
-        self.MemberID = MemberID
-        self.ItemNumber = ItemNum
-        self.LoanRef = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
-'''
+
+class Digital(Item):
+    def __init__(self, file_type: str, format: str, creator: str, *args, **kwargs):
+        super(Digital, self).__init__(*args, **kwargs)
+        self.file_type = file_type
+        self.format = format
+        self.creator = creator
+
 
 def memberformatter(member: Member):
     memberdetails = {}
@@ -136,6 +133,11 @@ def itemformatter(item: Item):
     if type(item).__name__ == 'Article':
         itemdetails['journalisbn'] = item.JournalISBN
         itemdetails['authors'] = item.authors
+    if type(item).__name__ == 'Digital':
+        itemdetails['format'] = item.format
+        itemdetails['file_type'] = item.file_type
+        itemdetails['creator'] = item.creator
+
     return itemdetails
 
 
@@ -145,7 +147,14 @@ def jsontoitem(jsondict: dict):
         print(datadict)
 
 
+def numbered_menu(l: list):
+    for i in range(0, len(l)):
+        print('{0}. {1}'.format(i+1, l[i]))
 
+    inp = request_num_input('Please select an option (1 - {0})'.format(len(l)), True)
+    while inp -1 <0 or inp-1>=len(l):
+        inp = request_num_input('Invalid option. Please select an option (1 - {0})'.format(len(l)), True)
+    return inp -1
 
 
 def list_of_strings(message: str):
@@ -156,6 +165,11 @@ def list_of_strings(message: str):
             break
         newlist.append(inp)
     return newlist
+
+
+def print_dic(d : dict):
+    for a in d:
+        print('{0}:    {1}'.format(a, d[a]))
 
 class Library():
     def __init__(self, name: str):
@@ -190,7 +204,6 @@ class Library():
         with open(loansdirectory, 'w') as outfile:
             json.dump(self.Loans, outfile, indent=4)
 
-
     def new_member(self):
         name = input('Enter Name for Member')
         year = request_num_input('Please enter the year you were born', True)
@@ -208,6 +221,29 @@ class Library():
         newmember = Member(name, mem_add, date_of_birth)
         self.Members[newmember.MemberID] = memberformatter(newmember)
         self.savedata()
+
+    def delete_member(self):
+        if len(self.Members) <1:
+            print("Library Doesn't have any members yet!")
+            return
+        options_list = list()
+        for m in self.Members:
+            options_list.append((m, self.Members[m]['name']))
+        options_list.append('Cancel')
+        c = numbered_menu(options_list)
+        if c == len(options_list)-1:
+            print('Cancelled Deletion')
+        else:
+            for l in self.Loans:
+                if self.key_val_match('member', options_list[c][0], self.Loans[l]):
+                    print('Cannot delete a member with outstanding loans. Cancelling')
+                    return
+            print('Please Confirm Deletion of: {0}'.format(self.Members[options_list[c][0]]['name']))
+            confirm = ['Yes', 'No']
+            f = numbered_menu(confirm)
+            if f == 0:
+                del self.Members[options_list[c][0]]
+                self.savedata()
 
     def searchlibraryitems(self):
         results_dic = {}
@@ -265,6 +301,14 @@ class Library():
                         else:
                             if keywords.issubset(isbnset) and i not in search_results:
                                 search_results.append(i)
+                    elif self.Items[i]['type'] == 'Digital':
+                        formatset = set(self.Items[i]['format'].lower().split('_'))
+                        if inclusive:  # If the search type is inclusive, results will contain all articles that contain each individual word
+                            if len(keywords.intersection(formatset)) > 0 and i not in search_results:
+                                search_results.append(i)
+                        else:
+                            if keywords.issubset(formatset) and i not in search_results:
+                                search_results.append(i)
 
             if len(search_results) < 1:
                 no_results_found = True
@@ -273,28 +317,25 @@ class Library():
                 if search_term == 'q':
                     return 0
 
+
         for i in range(0, len(search_results)):
             print(self.Items[search_results[i]]['title'])
-        '''
-        for i in range(0, len(search_results)):  # Essentially, every 4 results is grouped into a line and that line is added to the end string
-            temp = ''
-            if i > 0 and i % 4 == 0:
-                temp = '----' + self.Items[search_results[i - 4]]['title'] + '----' + self.Items[search_results[i - 3]]['title'] + '----' + self.Items[search_results[
-                    i - 2]]['title'] + '----' + self.Items[search_results[i - 1]]['title'] + '----'
-                search_results_string.append(temp)
-            if i == len(search_results) - 1 and len(search_results) % 4 != 0:
-                temp = '----'
-                remainder = (i + 1) % 4
-                for r in range(0, remainder):
-                    temp += self.Items[search_results[i - r]]['title'] + '----'
-                search_results_string.append(temp)
-        for s in search_results_string:  # Just printing out the rows of the string
-            print(s + '\n')
-        '''
+
+        print('Would you like to display an items details?')
+        options = ['Yes', 'No']
+        choice = numbered_menu(options)
+        if choice == 0:
+            options = list()
+            print('Choose by number.')
+            for i in search_results:
+                options.append(self.Items[i]['title'])
+            choice = numbered_menu(options)
+            todisplay = search_results[choice]
+            print_dic(self.Items[todisplay])
 
     def add_item(self):
         while True:
-            print('Choose Item To Add \n 1. Book \n 2. Journal \n 3. Article \n q Quit')
+            print('Choose Item To Add \n 1. Book \n 2. Journal \n 3. Article \n 4. Digital Media \n q Quit')
             inp = input()
             if inp == '1':
                 self.create_book()
@@ -302,10 +343,35 @@ class Library():
                 self.create_journal()
             elif inp == '3':
                 self.create_article()
+            elif inp == '4':
+                self.create_digital()
             elif inp == 'q':
                 return
             else:
                 print('Please enter a valid option')
+
+    def delete_item(self):
+        if len(self.Items) <1:
+            print("Library Doesn't have any items yet!")
+            return
+        options_list = list()
+        for m in self.Items:
+            options_list.append((m, self.Items[m]['title']))
+        options_list.append('Cancel')
+        c = numbered_menu(options_list)
+        if c == len(options_list) - 1:
+            print('Cancelled Deletion')
+        else:
+            for l in self.Loans:
+                if self.key_val_match('item', options_list[c][0], self.Loans[l]):
+                    print('Cannot delete an item with outstanding loans. Cancelling')
+                    return
+            print('Please Confirm Deletion of: {0}'.format(self.Items[options_list[c][0]]['title']))
+            confirm = ['Yes', 'No']
+            f = numbered_menu(confirm)
+            if f == 0:
+                del self.Items[options_list[c][0]]
+                self.savedata()
 
     def create_book(self):
         title = input('Enter Name for Book')
@@ -331,9 +397,6 @@ class Library():
         articlelist = list_of_strings('Enter Article Item Number')
         newjournal = Journal(vol, articlelist,isbn, publisher, authors, title, description)
         self.Items[newjournal.ItemNum] = itemformatter(newjournal)
-        print(newjournal)
-        print('------------------')
-        print(self.Items[newjournal.ItemNum])
         self.savedata()
 
     def create_article(self):
@@ -342,6 +405,22 @@ class Library():
         authors = list_of_strings('Enter Author Name')
         isbn = input('Enter ISBN for Journal of Article')
         newarticle = Article(isbn, authors, title, description)
+        self.Items[newarticle.ItemNum] = itemformatter(newarticle)
+        self.savedata()
+
+    def create_digital(self):
+        title = input('Enter Name for Digital Media')
+        description = input('Enter Description for Digital Media')
+        creator = input('Enter Creator for Digital Media')
+        formats = ['VIDEO_FILE', 'IMAGE_FILE','AUDIO_FILE','OTHER_FILE']
+        f = numbered_menu(formats)
+        format = formats[f]
+        filetypes = ['MP4', 'JPG', 'MP3', 'unknown file extension']
+        ft = numbered_menu(filetypes)
+        filetype = filetypes[ft]
+        newdigital = Digital(filetype, format, creator,title, description)
+        self.Items[newdigital.ItemNum] = itemformatter(newdigital)
+        self.savedata()
 
     def display_items_of_type(self, itemtype: Item):
         result_list = list()
@@ -381,7 +460,159 @@ class Library():
             del self.Loans[results[inp-1][0]]
             self.savedata()
 
+    def get_items_of_type(self, itemtype: Item):
+        result_list = list()
+        for a in self.Items:
+            if self.key_val_match('type', itemtype.__name__, self.Items[a]) is True:
+                result_list.append((a,self.Items[a]['title']))
+        return result_list
 
+    def modify_items(self):
+        print('Choose an Option')
+        options= ['Modify Article','Modify Journal','Modify Book','Modify Digital Media', 'Return']
+        c = numbered_menu(options)
+        if c == 0:
+            self.modify_item_type(Article)
+        if c == 1:
+            self.modify_item_type(Journal)
+        if c == 2:
+            self.modify_item_type(Book)
+        if c == 3:
+            self.modify_item_type(Digital)
+        else:
+            return
+
+    def modify_item_type(self, itemtype: Item):
+        items = self.get_items_of_type(itemtype)
+        if len(items) < 1:
+            print('No Items of Type to Modify')
+            return
+        item_names = list()
+        for i in items:
+            item_names.append(i[1])
+        print('Choose an item to modify')
+        c = numbered_menu(item_names)
+        if c == 0 or c >= len(items):
+            if itemtype == Article:
+                self.mod_article(items[c][0])
+            if itemtype == Journal:
+                self.mod_journal(items[c][0])
+            if itemtype == Book:
+                self.mod_book(items[c][0])
+            if itemtype == Digital:
+                self.mod_digital(items[c][0])
+        else:
+            return
+
+    def mod_article(self, item_num: str):
+        print_dic(self.Items[item_num])
+        print('Choose an Option')
+        options = ["Modify Article's Journal ISBN", 'Modify Article Authors', 'Modify Title', 'Modify Description','Cancel']
+        c = numbered_menu(options)
+        if c == 0:
+            new_ISBN = input('Enter new ISBN').lower()
+            self.Items[item_num]['journalisbn'] = new_ISBN
+            self.savedata()
+        if c == 1:
+            new_authors = list_of_strings('Enter New List of Authors')
+            self.Items[item_num]['authors'] = new_authors
+            self.savedata()
+        if c == 2:
+            new_title = input('Enter new title')
+            self.Items[item_num]['title'] = new_title
+            self.savedata()
+            return
+        if c == 3:
+            desc = input('Enter new Description')
+            self.Items[item_num]['description'] = desc
+            self.savedata()
+            return
+        else:
+            return
+
+    def mod_journal(self, item_num: str):
+        print_dic(self.Items[item_num])
+        print('Choose an Option')
+        options = ["Modify Journal ISBN", 'Modify Journal Authors', 'Populate Article List from Library Inventory','Modify Title', 'Modify Description','Cancel']
+        c = numbered_menu(options)
+        if c == 0:
+            new_ISBN = input('Enter new ISBN').lower()
+            self.Items[item_num]['isbn'] = new_ISBN
+            self.savedata()
+            return
+        if c == 1:
+            new_authors = list_of_strings('Enter New List of Authors')
+            self.Items[item_num]['authors'] = new_authors
+            self.savedata()
+            return
+        if c == 2:
+            all_articles = self.get_items_of_type(Article)
+            list_to_add = list()
+            for aa in all_articles:
+                if self.key_val_match('journalisbn', self.Items[item_num]['isbn'], self.Items[aa[0]])\
+                        and aa not in self.Items[item_num]['articlelist']:
+                    list_to_add.append(aa)
+            if len(list_to_add)> 0:
+                self.Items[item_num]['articlelist'] = list_to_add
+            self.savedata()
+            return
+        if c == 3:
+            new_title = input('Enter new title')
+            self.Items[item_num]['title'] = new_title
+            self.savedata()
+            return
+        if c == 4:
+            desc = input('Enter new Description')
+            self.Items[item_num]['description'] = desc
+            self.savedata()
+            return
+        else:
+            return
+
+    def mod_book(self, item_num:str):
+        print_dic(self.Items[item_num])
+        print('Choose an Option')
+        options = ["Modify Book ISBN", 'Modify Book Authors','Modify Title', 'Modify Description','Cancel']
+        c = numbered_menu(options)
+        if c == 0:
+            new_ISBN = input('Enter new ISBN').lower()
+            self.Items[item_num]['isbn'] = new_ISBN
+            self.savedata()
+            return
+        if c == 1:
+            new_authors = list_of_strings('Enter New List of Authors')
+            self.Items[item_num]['authors'] = new_authors
+            self.savedata()
+            return
+        if c == 2:
+            new_title = input('Enter new title')
+            self.Items[item_num]['title'] = new_title
+            self.savedata()
+        if c == 3:
+            desc = input('Enter new Description')
+            self.Items[item_num]['description'] = desc
+            self.savedata()
+            return
+        else:
+            return
+
+    def mod_digital(self, item_num:str):
+        print_dic(self.Items[item_num])
+        print('Choose an Option')
+        options = ["Modify Title", 'Modify Description', 'Cancel']
+        c = numbered_menu(options)
+        if c == 0:
+            title = input('Enter new Title')
+            self.Items[item_num]['title'] = title
+            self.savedata()
+            return
+        if c == 1:
+            desc = input('Enter new Description')
+            self.Items[item_num]['description'] = desc
+            self.savedata()
+            return
+        else:
+            return
 
     def key_val_match(self, key: str, value: str, dic: dict()):
         return dic[key] == value
